@@ -1,0 +1,2 @@
+# jikan
+Jikan API client.
