@@ -1,5 +1,7 @@
 package jikan
 
+import "github.com/aerogo/http/client"
+
 // Anime via http://jikan.me/api/v1.2/anime/1/characters_staff
 type Anime struct {
 	LinkCanonical string     `json:"link-canonical"`
@@ -52,4 +54,11 @@ type Anime struct {
 		URL   string `json:"url"`
 		Role  string `json:"role"`
 	} `json:"staff"`
+}
+
+// GetAnime returns an anime object for the given ID.
+func GetAnime(id string) (*Anime, error) {
+	anime := &Anime{}
+	_, err := client.Get(Endpoint + "/anime/" + id + "/characters_staff").EndStruct(anime)
+	return anime, err
 }
