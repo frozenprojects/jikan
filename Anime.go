@@ -23,7 +23,7 @@ type Anime struct {
 	Genre         [][]string `json:"genre"`
 	Duration      string     `json:"duration"`
 	Rating        string     `json:"rating"`
-	Score         []int      `json:"score"`
+	Score         []float64  `json:"score"`
 	Ranked        int        `json:"ranked"`
 	Popularity    int        `json:"popularity"`
 	Members       int        `json:"members"`
