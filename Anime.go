@@ -1,6 +1,11 @@
 package jikan
 
-import "github.com/aerogo/http/client"
+import (
+	"encoding/json"
+	"strings"
+
+	"github.com/aerogo/http/client"
+)
 
 // Anime via http://jikan.me/api/v1.2/anime/1/characters_staff
 type Anime struct {
@@ -59,6 +64,18 @@ type Anime struct {
 // GetAnime returns an anime object for the given ID.
 func GetAnime(id string) (*Anime, error) {
 	anime := &Anime{}
-	_, err := client.Get(Endpoint + "/anime/" + id + "/characters_staff").EndStruct(anime)
+	response, err := client.Get(Endpoint + "/anime/" + id + "/characters_staff").End()
+
+	if err != nil {
+		return nil, err
+	}
+
+	jsonString := response.String()
+	jsonString = strings.Replace(jsonString, `"producer":false`, `"producer":null`, 1)
+	jsonString = strings.Replace(jsonString, `"licensor":false`, `"licensor":null`, 1)
+	jsonString = strings.Replace(jsonString, `"premiered":false`, `"premiered":null`, 1)
+	jsonString = strings.Replace(jsonString, `"studio":false`, `"studio":null`, 1)
+
+	err = json.Unmarshal([]byte(jsonString), anime)
 	return anime, err
 }
