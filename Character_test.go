@@ -7,10 +7,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAnime(t *testing.T) {
-	anime, err := jikan.GetAnime("1")
+func TestCharacter(t *testing.T) {
+	character, err := jikan.GetCharacter("1")
 
 	assert.NoError(t, err)
-	assert.NotNil(t, anime)
-	assert.NotEmpty(t, anime.Title)
+	assert.NotNil(t, character)
+	assert.NotEmpty(t, character.Name)
 }
