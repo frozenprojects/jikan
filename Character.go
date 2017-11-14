@@ -11,7 +11,7 @@ type Character struct {
 		Name  string `json:"name"`
 		Link  string `json:"link"`
 		Image string `json:"image"`
-	} `json:"characterography"`
+	} `json:"characterography"` // TODO: Fix this to animeography
 	Mangaography []struct {
 		Name  string `json:"name"`
 		Link  string `json:"link"`
