@@ -7,57 +7,87 @@ import (
 	"github.com/aerogo/http/client"
 )
 
-// Anime via http://jikan.me/api/v1.2/anime/1/characters_staff
+// Anime via http://jikan.me/api/v2.0-dev/anime/1/characters_staff
 type Anime struct {
-	LinkCanonical string     `json:"link-canonical"`
-	Synopsis      string     `json:"synopsis"`
-	Title         string     `json:"title"`
-	Image         string     `json:"image"`
-	TitleEnglish  string     `json:"title-english"`
-	Japanese      string     `json:"japanese"`
-	Type          string     `json:"type"`
-	Episodes      int        `json:"episodes"`
-	Status        string     `json:"status"`
-	Aired         string     `json:"aired"`
-	Premiered     string     `json:"premiered"`
-	Broadcast     string     `json:"broadcast"`
-	Producer      [][]string `json:"producer"`
-	Licensor      [][]string `json:"licensor"`
-	Studio        [][]string `json:"studio"`
-	Source        string     `json:"source"`
-	Genre         [][]string `json:"genre"`
-	Duration      string     `json:"duration"`
-	Rating        string     `json:"rating"`
-	Score         []float64  `json:"score"`
-	Ranked        int        `json:"ranked"`
-	Popularity    int        `json:"popularity"`
-	Members       int        `json:"members"`
-	Favorites     int        `json:"favorites"`
-	Background    string     `json:"background"`
+	MalID         int         `json:"mal_id"`
+	LinkCanonical string      `json:"link_canonical"`
+	Title         string      `json:"title"`
+	TitleEnglish  string      `json:"title_english"`
+	TitleJapanese string      `json:"title_japanese"`
+	TitleSynonyms interface{} `json:"title_synonyms"`
+	ImageURL      string      `json:"image_url"`
+	Type          string      `json:"type"`
+	Source        string      `json:"source"`
+	Episodes      int         `json:"episodes"`
+	Status        string      `json:"status"`
+	Aired         string      `json:"aired"`
+	Duration      string      `json:"duration"`
+	Rating        string      `json:"rating"`
+	Score         float64     `json:"score"`
+	ScoredBy      int         `json:"scored_by"`
+	Rank          int         `json:"rank"`
+	Popularity    int         `json:"popularity"`
+	Members       int         `json:"members"`
+	Favorites     int         `json:"favorites"`
+	Synopsis      string      `json:"synopsis"`
+	Background    string      `json:"background"`
 	Related       struct {
-		Adaptation [][]string `json:"Adaptation"`
-		SideStory  [][]string `json:"Side story"`
-		Summary    [][]string `json:"Summary"`
+		Adaptation []struct {
+			MalID int    `json:"mal_id"`
+			URL   string `json:"url"`
+			Title string `json:"title"`
+		} `json:"Adaptation"`
+		SideStory []struct {
+			MalID int    `json:"mal_id"`
+			URL   string `json:"url"`
+			Title string `json:"title"`
+		} `json:"Side story"`
+		Summary []struct {
+			MalID int    `json:"mal_id"`
+			URL   string `json:"url"`
+			Title string `json:"title"`
+		} `json:"Summary"`
 	} `json:"related"`
-	OpeningTheme []string `json:"opening-theme"`
-	EndingTheme  []string `json:"ending-theme"`
+	Premiered string `json:"premiered"`
+	Broadcast string `json:"broadcast"`
+	Producer  []struct {
+		URL  string `json:"url"`
+		Name string `json:"name"`
+	} `json:"producer"`
+	Licensor []struct {
+		URL  string `json:"url"`
+		Name string `json:"name"`
+	} `json:"licensor"`
+	Studio []struct {
+		URL  string `json:"url"`
+		Name string `json:"name"`
+	} `json:"studio"`
+	Genre []struct {
+		URL  string `json:"url"`
+		Name string `json:"name"`
+	} `json:"genre"`
+	OpeningTheme []string `json:"opening_theme"`
+	EndingTheme  []string `json:"ending_theme"`
 	Character    []struct {
-		Image      string `json:"image"`
+		ImageURL   string `json:"image_url"`
+		MalID      int    `json:"mal_id"`
 		URL        string `json:"url"`
 		Name       string `json:"name"`
 		Role       string `json:"role"`
 		VoiceActor []struct {
-			Name  string `json:"name"`
-			URL   string `json:"url"`
-			Role  string `json:"role"`
-			Image string `json:"image"`
-		} `json:"voice-actor"`
+			MalID    int    `json:"mal_id"`
+			Name     string `json:"name"`
+			URL      string `json:"url"`
+			Language string `json:"language"`
+			ImageURL string `json:"image_url"`
+		} `json:"voice_actor"`
 	} `json:"character"`
 	Staff []struct {
-		Image string `json:"image"`
-		Name  string `json:"name"`
-		URL   string `json:"url"`
-		Role  string `json:"role"`
+		ImageURL string `json:"image_url"`
+		MalID    int    `json:"mal_id"`
+		URL      string `json:"url"`
+		Name     string `json:"name"`
+		Role     string `json:"role"`
 	} `json:"staff"`
 }
 
@@ -71,10 +101,9 @@ func GetAnime(id string) (*Anime, error) {
 	}
 
 	jsonString := response.String()
-	jsonString = strings.Replace(jsonString, `"producer":false`, `"producer":null`, 1)
-	jsonString = strings.Replace(jsonString, `"licensor":false`, `"licensor":null`, 1)
-	jsonString = strings.Replace(jsonString, `"premiered":false`, `"premiered":null`, 1)
-	jsonString = strings.Replace(jsonString, `"studio":false`, `"studio":null`, 1)
+	jsonString = strings.Replace(jsonString, `"premiered":[]`, `"premiered":""`, 1)
+	jsonString = strings.Replace(jsonString, `"broadcast":[]`, `"broadcast":""`, 1)
+	jsonString = strings.Replace(jsonString, `"related":[]`, `"related":null`, 1)
 
 	err = json.Unmarshal([]byte(jsonString), anime)
 	return anime, err

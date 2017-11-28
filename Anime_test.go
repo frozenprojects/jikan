@@ -8,9 +8,17 @@ import (
 )
 
 func TestAnime(t *testing.T) {
-	anime, err := jikan.GetAnime("1")
+	testIDs := []string{
+		"1",
+		"35082",
+		"21557",
+	}
 
-	assert.NoError(t, err)
-	assert.NotNil(t, anime)
-	assert.NotEmpty(t, anime.Title)
+	for _, id := range testIDs {
+		anime, err := jikan.GetAnime(id)
+
+		assert.NoError(t, err)
+		assert.NotNil(t, anime)
+		assert.NotEmpty(t, anime.Title)
+	}
 }
